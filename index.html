@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomy Learning Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f0e0c;--bone:#f5f0e8;--cream:#faf7f2;--muted:#8a7f72;--accent:#b34a2a;--accent2:#2a5c8a;--border:rgba(15,14,12,.12);--border-strong:rgba(15,14,12,.22)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+header{border-bottom:1px solid var(--border-strong);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;background:rgba(250,247,242,.92);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.04em;color:var(--ink);text-decoration:none}
+.logo em{font-style:italic;color:var(--muted)}
+nav{display:flex;gap:28px;align-items:center}
+nav a{font-size:12px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+nav a:hover{color:var(--ink)}
+.nav-cta{font-size:11px;padding:7px 16px;border:1px solid var(--border-strong);border-radius:2px;background:var(--ink);color:var(--bone)!important;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.nav-cta:hover{background:var(--accent);border-color:var(--accent)}
+.hero{padding:96px 48px 80px;max-width:1100px;margin:0 auto;position:relative}
+.hero-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.hero-label::before{content:'';display:block;width:24px;height:1px;background:var(--muted)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,7vw,88px);font-weight:300;line-height:1.0;letter-spacing:-.01em;max-width:700px;margin-bottom:32px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-desc{font-size:15px;color:var(--muted);max-width:460px;line-height:1.75;font-weight:300}
+.hero-deco{position:absolute;right:48px;top:80px;width:180px;height:180px;opacity:.06}
+.divider{height:1px;background:var(--border);margin:0 48px}
+.cards-section{padding:80px 48px;max-width:1100px;margin:0 auto}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:40px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';display:block;width:24px;height:1px;background:var(--muted)}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border-strong)}
+.card{background:var(--cream);padding:40px 36px;border-right:1px solid var(--border-strong);text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:20px;transition:background .25s;position:relative;overflow:hidden;cursor:pointer}
+.card:last-child{border-right:none}
+.card:hover{background:var(--bone)}
+.card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+.card-1::after{background:var(--accent2)}
+.card-2::after{background:var(--accent)}
+.card:hover::after{width:100%}
+.card-number{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;line-height:1;letter-spacing:-.02em}
+.card-1 .card-number{color:rgba(42,92,138,.15)}
+.card-2 .card-number{color:rgba(179,74,42,.15)}
+.card-icon{width:40px;height:40px;border:1px solid var(--border-strong);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;letter-spacing:.01em;line-height:1.15}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;flex:1}
+.card-action{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s;margin-top:8px}
+.card:hover .card-action{color:var(--ink)}
+.card-action-arrow{width:20px;height:1px;background:currentColor;position:relative;transition:width .25s}
+.card:hover .card-action-arrow{width:32px}
+.card-action-arrow::after{content:'';position:absolute;right:0;top:-3px;width:6px;height:6px;border-right:1px solid currentColor;border-top:1px solid currentColor;transform:rotate(45deg)}
+code{font-family:'DM Mono',monospace;font-size:11px;background:var(--bone);padding:1px 5px;border-radius:2px}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,14,12,.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--cream);border:1px solid var(--border-strong);width:min(700px,95vw);max-height:88vh;overflow-y:auto;animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px)}}
+.modal-header{padding:28px 32px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;background:var(--cream);z-index:1}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400}
+.modal-close{background:none;border:1px solid var(--border);width:32px;height:32px;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;border-radius:2px}
+.modal-close:hover{background:var(--bone);color:var(--ink)}
+.modal-body{padding:28px 32px 32px}
+/* TABS */
+.quiz-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px;flex-wrap:wrap}
+.quiz-tab{padding:8px 18px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s}
+.quiz-tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+/* FLASHCARD */
+.flashcard-wrap{perspective:1000px}
+.flashcard{width:100%;min-height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer;border:1px solid var(--border-strong);border-radius:2px}
+.flashcard.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;min-height:200px}
+.card-face-front{background:var(--bone)}
+.card-face-back{background:#eef3f8;transform:rotateY(180deg)}
+.card-face-hint{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.card-face-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;line-height:1.4;color:var(--ink)}
+.card-face-cat{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px;padding:3px 8px;border:1px solid var(--border);border-radius:2px}
+.quiz-controls{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.quiz-btn{padding:8px 20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--border-strong);background:none;cursor:pointer;color:var(--ink);transition:background .18s;border-radius:2px}
+.quiz-btn:hover{background:var(--bone)}
+.quiz-btn.correct{border-color:#2d7a4f;color:#2d7a4f}
+.quiz-btn.correct:hover{background:#e8f5ee}
+.quiz-btn.wrong{border-color:var(--accent);color:var(--accent)}
+.quiz-btn.wrong:hover{background:#fdf0ec}
+.quiz-btn.primary{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+.quiz-btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+.quiz-meta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-left:auto}
+.quiz-progress{width:100%;height:2px;background:var(--border);margin-bottom:20px;border-radius:1px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--accent2);border-radius:1px;transition:width .3s}
+/* FORMS */
+.add-card-form{display:flex;flex-direction:column;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.form-input,.form-textarea{border:1px solid var(--border-strong);background:var(--bone);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);border-radius:2px;outline:none;transition:border-color .2s;width:100%}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent2);background:#fff}
+.form-textarea{resize:vertical;min-height:72px}
+.card-list{display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto}
+.card-list-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bone);border:1px solid var(--border);border-radius:2px;font-size:12px}
+.card-list-q{flex:1;font-weight:500;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-list-a{color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.card-list-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 4px;transition:color .15s;flex-shrink:0}
+.card-list-del:hover{color:var(--accent)}
+.empty-cards{text-align:center;padding:24px;color:var(--muted);font-size:12px;font-style:italic;border:1px dashed var(--border-strong);border-radius:2px}
+/* IMPORT */
+.import-zone{border:2px dashed var(--border-strong);border-radius:2px;padding:32px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+.import-zone:hover,.import-zone.drag{border-color:var(--accent2);background:rgba(42,92,138,.04)}
+.import-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.import-zone-icon{font-size:28px;margin-bottom:10px}
+.import-zone-title{font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:6px}
+.import-zone-sub{font-size:12px;color:var(--muted)}
+.fmt-tags{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.fmt-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border-strong);border-radius:2px;color:var(--muted)}
+.import-log{margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;color:var(--muted);max-height:120px;overflow-y:auto;background:var(--bone);padding:10px 12px;border-radius:2px}
+.import-log .ok{color:#2d7a4f}
+.import-log .err{color:var(--accent)}
+.import-log .inf{color:var(--accent2)}
+/* STATS */
+.stats-row{display:flex;gap:24px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);align-items:center;flex-wrap:wrap}
+.stat .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;line-height:1}
+.stat .stat-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+/* DONE */
+.done-screen{text-align:center;padding:40px 20px}
+.done-screen h2{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:8px}
+.done-screen p{color:var(--muted);font-size:13px;margin-bottom:24px}
+footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+/* ANIM */
+.fade-up{opacity:0;transform:translateY(24px);animation:fadeUp .6s ease forwards}
+.fade-up:nth-child(1){animation-delay:.1s}
+.fade-up:nth-child(2){animation-delay:.22s}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.hero-label,.hero h1,.hero-desc{opacity:0;animation:fadeUp .7s ease forwards}
+.hero-label{animation-delay:.1s}
+.hero h1{animation-delay:.22s}
+.hero-desc{animation-delay:.38s}
+@media(max-width:680px){
+  header{padding:0 20px}
+  .hero{padding:56px 20px 40px}
+  .cards-section{padding:40px 20px}
+  .divider{margin:0 20px}
+  .cards-grid{grid-template-columns:1fr}
+  .card{border-right:none;border-bottom:1px solid var(--border-strong)}
+  .card:last-child{border-bottom:none}
+  footer{padding:24px 20px;flex-direction:column;gap:8px;text-align:center}
+  .hero-deco{display:none}
+  nav .nav-label{display:none}
+  .modal-body,.modal-header{padding-left:18px;padding-right:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">Anatomy <em>Learning Space</em></a>
+  <nav>
+    <a href="#tools" class="nav-label">Tools</a>
+    <button class="nav-cta" onclick="openQuiz()">Daily Quiz</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <svg class="hero-deco" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="90" cy="90" r="88" stroke="currentColor" stroke-width="1"/>
+    <line x1="90" y1="2" x2="90" y2="178" stroke="currentColor" stroke-width="1"/>
+    <line x1="2" y1="90" x2="178" y2="90" stroke="currentColor" stroke-width="1"/>
+    <circle cx="90" cy="90" r="40" stroke="currentColor" stroke-width="1"/>
+    <circle cx="90" cy="90" r="4" fill="currentColor"/>
+    <line x1="50" y1="50" x2="130" y2="130" stroke="currentColor" stroke-width=".5"/>
+    <line x1="130" y1="50" x2="50" y2="130" stroke="currentColor" stroke-width=".5"/>
+  </svg>
+  <div class="hero-label">FK UKDW — Medical Study Tools</div>
+  <h1>Study <em>Smarter,</em><br>Learn Anatomy</h1>
+  <p class="hero-desc">A personal space to track your anatomy specimens, test your knowledge daily, and build mastery through structured practice.</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="cards-section" id="tools">
+  <div class="section-label">Choose a tool</div>
+  <div class="cards-grid">
+    <a class="card card-1 fade-up" href="anatomi_preparat.html">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="card-number">01</div>
+        <div class="card-icon" style="border-color:rgba(42,92,138,.3)">🫀</div>
+      </div>
+      <div><div class="card-title">Anatomy<br>Checklist</div></div>
+      <div class="card-desc">Track your specimen collection across all organ systems — cardiovascular, nervous, respiratory, and gastrointestinal. Upload your own specimen photos and add notes.</div>
+      <div class="card-action"><span class="card-action-arrow"></span>Open checklist</div>
+    </a>
+    <div class="card card-2 fade-up" onclick="openQuiz()">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="card-number">02</div>
+        <div class="card-icon" style="border-color:rgba(179,74,42,.3)">🧠</div>
+      </div>
+      <div><div class="card-title">Daily<br>Quiz</div></div>
+      <div class="card-desc">Anki-style flashcard system. Import your existing <code>.apkg</code> or <code>.txt/.csv</code> decks, or build your own cards from scratch with category tagging.</div>
+      <div class="card-action"><span class="card-action-arrow"></span>Start quiz</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ MODAL -->
+<div class="modal-overlay" id="quiz-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Daily Quiz</div>
+      <button class="modal-close" onclick="closeQuiz()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="quiz-tabs">
+        <button class="quiz-tab active" onclick="switchTab('practice',this)">Practice</button>
+        <button class="quiz-tab" onclick="switchTab('manage',this)">My Cards</button>
+        <button class="quiz-tab" onclick="switchTab('add',this)">+ Add Card</button>
+        <button class="quiz-tab" onclick="switchTab('import',this)">↑ Import</button>
+      </div>
+
+      <!-- PRACTICE -->
+      <div id="tab-practice">
+        <div id="no-cards-msg" class="empty-cards" style="display:none">No cards yet — go to <strong>+ Add Card</strong> or <strong>↑ Import</strong> to get started.</div>
+        <div id="quiz-content">
+          <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-prog"></div></div>
+          <div id="done-screen" class="done-screen" style="display:none">
+            <div style="font-size:32px;margin-bottom:12px">✦</div>
+            <h2>Session complete</h2>
+            <p id="done-msg"></p>
+            <button class="quiz-btn primary" onclick="restartQuiz()">Restart session →</button>
+          </div>
+          <div id="active-card">
+            <div class="flashcard-wrap">
+              <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="card-face card-face-front">
+                  <div class="card-face-hint">Question — click to reveal</div>
+                  <div class="card-face-text" id="card-q">—</div>
+                  <div class="card-face-cat" id="card-cat-f" style="display:none"></div>
+                </div>
+                <div class="card-face card-face-back">
+                  <div class="card-face-hint">Answer</div>
+                  <div class="card-face-text" id="card-a">—</div>
+                  <div class="card-face-cat" id="card-cat-b" style="display:none"></div>
+                </div>
+              </div>
+            </div>
+            <div class="quiz-controls">
+              <button class="quiz-btn correct" onclick="markCard(true)">✓ Got it</button>
+              <button class="quiz-btn wrong" onclick="markCard(false)">✗ Missed</button>
+              <button class="quiz-btn" onclick="flipCard()">Flip</button>
+              <span class="quiz-meta" id="quiz-meta">—</span>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat"><div class="stat-val" id="s-correct" style="color:#2d7a4f">0</div><div class="stat-lbl">Correct</div></div>
+            <div class="stat"><div class="stat-val" id="s-wrong" style="color:#b34a2a">0</div><div class="stat-lbl">Missed</div></div>
+            <div class="stat"><div class="stat-val" id="s-pct">—</div><div class="stat-lbl">Accuracy</div></div>
+            <div style="flex:1"></div>
+            <button class="quiz-btn" onclick="restartQuiz()">Restart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANAGE -->
+      <div id="tab-manage" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <span id="manage-count" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)"></span>
+          <button class="quiz-btn wrong" onclick="clearAll()" style="font-size:9px;padding:5px 12px">Clear all</button>
+        </div>
+        <div id="manage-list"></div>
+      </div>
+
+      <!-- ADD -->
+      <div id="tab-add" style="display:none">
+        <div class="add-card-form">
+          <div class="form-group"><label class="form-label">Question / Front</label><textarea class="form-textarea" id="inp-q" placeholder="e.g. What does the valvula tricuspidalis consist of?"></textarea></div>
+          <div class="form-group"><label class="form-label">Answer / Back</label><textarea class="form-textarea" id="inp-a" placeholder="e.g. 3 cuspis: anterior, posterior, septalis"></textarea></div>
+          <div class="form-group"><label class="form-label">Category (optional)</label><input class="form-input" id="inp-cat" placeholder="e.g. Cardiovascular, Nervous System…"></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="quiz-btn primary" onclick="addCard()" style="padding:10px 28px">Add Card →</button>
+            <span id="add-ok" style="display:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:#2d7a4f">✓ Card added.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPORT -->
+      <div id="tab-import" style="display:none">
+        <div class="import-zone" id="drop-zone">
+          <input type="file" id="import-file" accept=".apkg,.txt,.csv,.tsv" onchange="handleImport(event)">
+          <div class="import-zone-icon">📂</div>
+          <div class="import-zone-title">Drop file or click to browse</div>
+          <div class="import-zone-sub">Import from Anki or plain text</div>
+          <div class="fmt-tags">
+            <span class="fmt-tag">.apkg — Anki deck</span>
+            <span class="fmt-tag">.txt — tab-separated</span>
+            <span class="fmt-tag">.csv — comma-separated</span>
+          </div>
+        </div>
+        <div id="import-log" class="import-log" style="display:none"></div>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+          <div class="form-label" style="margin-bottom:8px">Format guide</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:1.9;color:var(--muted)">
+            <div><span style="color:var(--ink)">.apkg</span> — export deck from Anki Desktop, import here directly</div>
+            <div><span style="color:var(--ink)">.txt / .csv</span> — one card per line, fields separated by tab or comma:</div>
+            <div style="background:var(--bone);padding:8px 12px;margin-top:5px;border-radius:2px">Question[TAB]Answer[TAB]Category(optional)</div>
+            <div style="margin-top:5px">Lines starting with <code>#</code> are treated as comments and skipped.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Anatomy Learning Space — FK UKDW</span>
+  <span>Built for personal study use</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ── STORAGE
+function loadCards(){try{return JSON.parse(localStorage.getItem('als_v2')||'[]')}catch(e){return[]}}
+function saveCards(c){localStorage.setItem('als_v2',JSON.stringify(c))}
+
+// ── QUIZ STATE
+let deck=[],idx=0,flipped=false,sOk=0,sNo=0;
+
+function buildDeck(){const c=loadCards();deck=[...c].sort(()=>Math.random()-.5);idx=0;flipped=false;sOk=0;sNo=0}
+
+function showCard(){
+  const cards=loadCards();
+  const noMsg=document.getElementById('no-cards-msg');
+  const qc=document.getElementById('quiz-content');
+  if(!cards.length){noMsg.style.display='';qc.style.display='none';return}
+  noMsg.style.display='none';qc.style.display='';
+  if(idx>=deck.length){
+    document.getElementById('active-card').style.display='none';
+    document.getElementById('done-screen').style.display='';
+    const t=sOk+sNo;
+    document.getElementById('done-msg').textContent=`${sOk} correct, ${sNo} missed — ${t?Math.round(sOk/t*100):0}% accuracy`;
+    updateStats();return;
+  }
+  document.getElementById('done-screen').style.display='none';
+  document.getElementById('active-card').style.display='';
+  const c=deck[idx];
+  document.getElementById('card-q').textContent=c.q;
+  document.getElementById('card-a').textContent=c.a;
+  const cf=document.getElementById('card-cat-f'),cb=document.getElementById('card-cat-b');
+  if(c.cat&&c.cat!=='General'){cf.textContent=cb.textContent=c.cat;cf.style.display=cb.style.display=''}
+  else{cf.style.display=cb.style.display='none'}
+  document.getElementById('flashcard').classList.remove('flipped');
+  flipped=false;updateMeta();
+}
+
+function flipCard(){flipped=!flipped;document.getElementById('flashcard').classList.toggle('flipped',flipped)}
+function markCard(ok){if(ok)sOk++;else sNo++;idx++;updateStats();showCard()}
+function updateMeta(){document.getElementById('quiz-meta').textContent=`${idx+1} / ${deck.length}`;document.getElementById('quiz-prog').style.width=deck.length?(idx/deck.length*100)+'%':'0%'}
+function updateStats(){const t=sOk+sNo;document.getElementById('s-correct').textContent=sOk;document.getElementById('s-wrong').textContent=sNo;document.getElementById('s-pct').textContent=t?Math.round(sOk/t*100)+'%':'—'}
+function restartQuiz(){buildDeck();showCard();updateStats()}
+
+// ── ADD
+function addCard(){
+  const q=document.getElementById('inp-q').value.trim();
+  const a=document.getElementById('inp-a').value.trim();
+  const cat=document.getElementById('inp-cat').value.trim();
+  if(!q||!a){alert('Please fill in both question and answer.');return}
+  const cards=loadCards();
+  cards.push({q,a,cat:cat||'General',id:Date.now()});
+  saveCards(cards);
+  document.getElementById('inp-q').value='';
+  document.getElementById('inp-a').value='';
+  document.getElementById('inp-cat').value='';
+  const ok=document.getElementById('add-ok');ok.style.display='';setTimeout(()=>ok.style.display='none',2000);
+  buildDeck();
+}
+
+// ── MANAGE
+function renderManage(){
+  const cards=loadCards();
+  const el=document.getElementById('manage-list');
+  document.getElementById('manage-count').textContent=`${cards.length} card${cards.length!==1?'s':''}`;
+  if(!cards.length){el.innerHTML='<div class="empty-cards">No cards yet.</div>';return}
+  const cats=[...new Set(cards.map(c=>c.cat||'General'))];
+  el.innerHTML=cats.map(cat=>{
+    const grp=cards.filter(c=>(c.cat||'General')===cat);
+    return`<div style="margin-bottom:18px"><div class="form-label" style="margin-bottom:6px">${cat} <span style="opacity:.5">(${grp.length})</span></div><div class="card-list">${grp.map(c=>`<div class="card-list-item"><span class="card-list-q">${c.q}</span><span class="card-list-a">${c.a.length>36?c.a.slice(0,36)+'…':c.a}</span><button class="card-list-del" onclick="delCard(${c.id})">✕</button></div>`).join('')}</div></div>`;
+  }).join('');
+}
+function delCard(id){if(!confirm('Delete this card?'))return;saveCards(loadCards().filter(c=>c.id!==id));buildDeck();renderManage()}
+function clearAll(){if(!confirm('Delete ALL cards? This cannot be undone.'))return;saveCards([]);buildDeck();renderManage()}
+
+// ── IMPORT
+function iLog(msg,cls=''){const el=document.getElementById('import-log');el.style.display='';el.innerHTML+=`<div class="${cls}">${msg}</div>`;el.scrollTop=el.scrollHeight}
+function clearLog(){const el=document.getElementById('import-log');el.innerHTML='';el.style.display='none'}
+
+async function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  clearLog();
+  iLog(`↑ Importing: ${file.name}`,'inf');
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='apkg') await importApkg(file);
+  else if(['txt','csv','tsv'].includes(ext)) await importText(file);
+  else iLog('Unsupported format.','err');
+  document.getElementById('import-file').value='';
+}
+
+async function importApkg(file){
+  try{
+    iLog('Reading archive…');
+    const buf=await file.arrayBuffer();
+    let zip;
+    try{zip=await JSZip.loadAsync(buf)}catch(e){iLog('Could not open .apkg archive: '+e.message,'err');return}
+    iLog('Archive opened. Locating database…');
+    // Try both anki21b (newer) and anki2 format
+    const dbFile=zip.file('collection.anki21')||zip.file('collection.anki2');
+    if(!dbFile){iLog('No Anki collection found inside archive.','err');return}
+    iLog('Loading SQL.js engine…');
+    // Load sql-wasm dynamically
+    if(!window.SQL){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js';
+        s.onload=res;s.onerror=rej;document.head.appendChild(s);
+      });
+    }
+    const SQL=await initSqlJs({locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`});
+    iLog('Extracting cards…');
+    const dbBuf=await dbFile.async('arraybuffer');
+    const db=new SQL.Database(new Uint8Array(dbBuf));
+    let rows;
+    try{rows=db.exec("SELECT flds, tags FROM notes")}
+    catch(e){iLog('Could not read notes: '+e.message,'err');return}
+    const cards=loadCards();
+    const existing=new Set(cards.map(c=>c.q));
+    let imported=0,skipped=0;
+    if(rows.length&&rows[0].values.length){
+      rows[0].values.forEach(row=>{
+        const parts=row[0].split('\x1f');
+        if(parts.length>=2){
+          const q=stripHtml(parts[0]).trim();
+          const a=stripHtml(parts[1]).trim();
+          if(q&&a){
+            if(existing.has(q)){skipped++;return}
+            const cat=(row[1]||'').trim().split(' ').filter(Boolean)[0]||'Anki Import';
+            cards.push({q,a,cat,id:Date.now()+Math.random()});
+            existing.add(q);imported++;
+          }
+        }
+      });
+    }
+    saveCards(cards);buildDeck();
+    iLog(`✓ Imported ${imported} card${imported!==1?'s':''}.${skipped?` (${skipped} duplicates skipped)`:''}  Total: ${loadCards().length}`,'ok');
+    db.close();
+  }catch(err){iLog('Import failed: '+err.message,'err');console.error(err)}
+}
+
+async function importText(file){
+  const text=await file.text();
+  const lines=text.split('\n');
+  const cards=loadCards();
+  const existing=new Set(cards.map(c=>c.q));
+  const isCsv=file.name.endsWith('.csv');
+  let imported=0,skipped=0,bad=0;
+  lines.forEach((raw,i)=>{
+    const line=raw.trim();
+    if(!line||line.startsWith('#'))return;
+    const sep=isCsv?',':'\t';
+    const parts=isCsv?splitCsv(line):line.split('\t');
+    if(parts.length<2){bad++;return}
+    const q=parts[0].trim(),a=parts[1].trim(),cat=(parts[2]||'').trim()||'Import';
+    if(!q||!a){bad++;return}
+    if(existing.has(q)){skipped++;return}
+    cards.push({q,a,cat,id:Date.now()+i+Math.random()});
+    existing.add(q);imported++;
+  });
+  saveCards(cards);buildDeck();
+  iLog(`✓ Imported ${imported} card${imported!==1?'s':''}.`,'ok');
+  if(skipped) iLog(`${skipped} duplicate${skipped!==1?'s':''} skipped.`);
+  if(bad) iLog(`${bad} line${bad!==1?'s':''} skipped (bad format).`);
+  iLog(`Total cards in deck: ${loadCards().length}`,'inf');
+}
+
+function splitCsv(line){
+  const result=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++}else inQ=!inQ}
+    else if(ch===','&&!inQ){result.push(cur);cur=''}
+    else cur+=ch;
+  }
+  result.push(cur);return result;
+}
+
+function stripHtml(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent||d.innerText||''}
+
+// ── DRAG & DROP
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{
+  e.preventDefault();dz.classList.remove('drag');
+  const f=e.dataTransfer.files[0];if(!f)return;
+  handleImport({target:{files:[f]}});
+});
+
+// ── TABS
+function switchTab(name,btn){
+  ['practice','manage','add','import'].forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'':'none');
+  document.querySelectorAll('.quiz-tab').forEach(el=>el.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='practice')showCard();
+  if(name==='manage')renderManage();
+  if(name==='import')clearLog();
+}
+
+// ── MODAL
+function openQuiz(){document.getElementById('quiz-modal').classList.add('open');buildDeck();showCard();updateStats()}
+function closeQuiz(){document.getElementById('quiz-modal').classList.remove('open')}
+document.getElementById('quiz-modal').addEventListener('click',function(e){if(e.target===this)closeQuiz()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeQuiz();return}
+  if(!document.getElementById('quiz-modal').classList.contains('open'))return;
+  if(document.getElementById('tab-practice').style.display!=='none'){
+    if(e.key===' '){e.preventDefault();flipCard()}
+    if(e.key==='ArrowRight')markCard(true);
+    if(e.key==='ArrowLeft')markCard(false);
+  }
+});
+</script>
+</body>
+</html>
