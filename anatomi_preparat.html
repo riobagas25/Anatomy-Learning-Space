@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomy Checklist — FK UKDW</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#faf7f2;--surface:#ffffff;--sidebar:#f5f0e8;--border:rgba(15,14,12,.12);--border-s:rgba(15,14,12,.22);--text:#0f0e0c;--muted:#8a7f72;--accent:#2a5c8a;--accent-light:#e8f0f8;--success:#2d7a4f;--success-light:#e8f5ee;--warning:#b34a2a;--warning-light:#fef0eb;--radius:2px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+/* BACK BAR */
+.back-bar{height:56px;border-bottom:1px solid var(--border-s);background:rgba(250,247,242,.94);backdrop-filter:blur(10px);display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:200}
+.back-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;background:none;border:none;cursor:pointer;padding:0}
+.back-btn:hover{color:var(--text)}
+.back-btn-arrow{width:18px;height:1px;background:currentColor;position:relative}
+.back-btn-arrow::before{content:'';position:absolute;left:0;top:-3px;width:6px;height:6px;border-left:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg)}
+.back-bar-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;font-style:italic;color:var(--muted)}
+
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--sidebar);border-right:1px solid var(--border-s);overflow-y:auto;position:sticky;top:56px;height:calc(100vh - 56px);display:flex;flex-direction:column}
+.sidebar-header{padding:16px;border-bottom:1px solid var(--border-s);background:var(--surface);flex-shrink:0}
+.sidebar-header h1{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text)}
+.sidebar-header p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.prog-wrap{margin-top:8px}
+.prog-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.prog-bar{height:2px;background:var(--border);border-radius:1px;margin-top:6px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:1px;transition:width .4s}
+
+.sys-list{overflow-y:auto;flex:1}
+.sys-btn{width:100%;text-align:left;background:none;border:none;padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);letter-spacing:.01em}
+.sys-btn:hover{background:rgba(15,14,12,.04)}
+.sys-btn.active{background:var(--accent-light);color:var(--accent)}
+.sys-btn .sys-badge{font-family:'DM Mono',monospace;font-size:10px;padding:2px 6px;border-radius:2px;background:var(--border);color:var(--muted)}
+.sys-btn.active .sys-badge{background:var(--accent);color:#fff}
+
+.sub-list{display:none;background:var(--surface);border-bottom:1px solid var(--border)}
+.sub-list.open{display:block}
+.sub-btn{width:100%;text-align:left;background:none;border:none;padding:7px 16px 7px 24px;font-size:12px;color:var(--muted);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.sub-btn:hover{background:var(--sidebar)}
+.sub-btn.active{color:var(--accent);font-weight:500;background:var(--accent-light)}
+.sub-btn .sub-badge{font-family:'DM Mono',monospace;font-size:10px;padding:1px 5px;border-radius:2px;background:var(--border);color:var(--muted)}
+.sub-btn.done .sub-badge{background:var(--success-light);color:var(--success)}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:56px;z-index:10;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar h2{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;flex:1;min-width:0}
+.topbar .system-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;background:var(--accent-light);color:var(--accent);white-space:nowrap}
+.search-wrap{position:relative;flex:0 0 200px}
+.search-wrap input{width:100%;padding:5px 10px 5px 28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);font-size:12px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+
+.content{flex:1;overflow-y:auto;padding:20px}
+
+/* WELCOME */
+.welcome{text-align:center;padding:60px 20px;max-width:500px;margin:0 auto}
+.welcome h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:8px}
+.welcome p{color:var(--muted);font-size:13px;line-height:1.8;font-weight:300}
+.welcome .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border-s);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-card .val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--accent)}
+.stat-card .lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* ITEM LIST */
+.item-section{margin-bottom:4px}
+.item-list{display:flex;flex-direction:column;gap:1px}
+.prep-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s}
+.prep-item:hover{border-color:var(--border-s)}
+.prep-item.checked{border-color:var(--success);background:var(--success-light)}
+.prep-header{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
+.prep-check{width:16px;height:16px;accent-color:var(--success);flex-shrink:0;cursor:pointer}
+.prep-name{flex:1;font-size:13px;font-weight:400}
+.prep-item.checked .prep-name{color:var(--success)}
+.photo-count{font-family:'DM Mono',monospace;font-size:10px;padding:2px 6px;border-radius:2px;background:var(--border);color:var(--muted);flex-shrink:0}
+.photo-count.has-photo{background:var(--accent-light);color:var(--accent)}
+.expand-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:11px;padding:2px 4px;flex-shrink:0;line-height:1;font-family:'DM Mono',monospace}
+.expand-btn:hover{color:var(--text)}
+
+.prep-gallery{display:none;padding:0 12px 12px;border-top:1px solid var(--border);margin-top:4px}
+.prep-gallery.open{display:block}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-bottom:8px}
+.thumb{position:relative;width:100%;padding-top:75%;border-radius:2px;overflow:hidden;cursor:pointer;border:1px solid var(--border)}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb-del{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:2px;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.add-photo-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px dashed var(--border-s);border-radius:var(--radius);background:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.add-photo-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.no-photo{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--muted);padding:4px 0 6px;font-style:italic}
+input[type=file]{display:none}
+
+/* LIGHTBOX */
+#lb{display:none;position:fixed;inset:0;background:rgba(15,14,12,.82);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+#lb.open{display:flex}
+#lb img{max-width:90vw;max-height:80vh;object-fit:contain;border-radius:2px}
+#lb-close{position:absolute;top:16px;right:20px;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-size:16px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+#lb-cap{color:rgba(255,255,255,.6);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em}
+
+/* NOTES */
+.notes-area{margin-top:8px}
+.notes-area textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:6px 8px;font-size:12px;resize:vertical;min-height:48px;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.notes-area textarea:focus{border-color:var(--accent)}
+.notes-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.filter-tab{padding:4px 10px;border:1px solid var(--border);border-radius:2px;background:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.filter-tab:hover{background:var(--sidebar)}
+.filter-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* SECTION HEADER */
+.sec-header{padding:6px 0;font-family:'DM Mono',monospace;font-size:10px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+.sec-header:first-child{margin-top:0}
+
+/* EMPTY */
+.empty-search{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a href="index.html" class="back-btn"><span class="back-btn-arrow"></span>Back to home</a>
+  <span class="back-bar-title">Anatomy Checklist</span>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>Checklist Preparat Anatomi</h1>
+      <p>FK UKDW — Klik sistem &amp; sub-kategori</p>
+      <div class="prog-wrap">
+        <div class="prog-label"><span>Progress keseluruhan</span><span id="prog-text">0 / 0</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="sys-list" id="sys-list"></div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <h2 id="topbar-title">Selamat datang</h2>
+      <span class="system-tag" id="system-tag" style="display:none"></span>
+      <div class="search-wrap" id="search-wrap" style="display:none">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Cari preparat..." oninput="filterItems()">
+      </div>
+    </div>
+    <div class="content" id="content">
+      <div class="welcome" id="welcome-view">
+        <h2>Pilih sistem & sub-kategori</h2>
+        <p>Klik nama sistem di sidebar kiri, lalu pilih sub-kategori untuk melihat daftar preparat. Centang preparat yang sudah kamu miliki, dan upload foto dari laptop kamu.</p>
+        <div class="stats" id="stats-grid"></div>
+      </div>
+      <div id="items-view" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div id="lb">
+  <button id="lb-close" onclick="document.getElementById('lb').classList.remove('open')">✕</button>
+  <img id="lb-img" src="" alt="">
+  <span id="lb-cap"></span>
+</div>
+<input type="file" id="global-file" multiple accept="image/*" onchange="handleFileUpload(event)">
+
+<script>
+// ─── DATA ────────────────────────────────────────────────
+const DATA = {
+  "Kardiovaskular": {
+    "Thoracic Wall — Linea": ["Linea mediana anterior","Linea mediana posterior","Linea mid-axilaris","Linea mid-clavicularis","Linea axilaris anterior","Linea axilaris posterior","Linea scapularis","Linea sternalis","Linea parasternalis","Linea paravertebralis"],
+    "Thoracic Wall — Apertura & Articulatio": ["Apertura thoracica superior","Apertura thoracica inferior","Art. costovertebralis capitis costae","Art. costotransversaria","Art. sternocostalis 1 (sinkondrosis)","Art. sternocostalis 2-7 (plana)","Art. costochondralis","Art. interchondralis","Simfisis manubriosternalis","Sinkondrosis xiphosternalis"],
+    "Thoracic Wall — Lapisan & Diafragma": ["Cutis","Subcutis / fascia superficialis","Fascia pectoralis / profunda","Fascia endothoracica","Pleura parietalis costalis","Diafragma (pars sternalis, costalis, lumbalis)","Centrum tendineum"],
+    "Otot Pernapasan": ["M. intercostalis externus","M. levator costae","M. serratus posterior superior","Mm. scaleni","M. pectoralis major (bantu inspirasi)","M. pectoralis minor","M. latissimus dorsi (bantu inspirasi)","M. serratus anterior","M. intercostalis internus","M. transversus thoracis","M. serratus posterior inferior","M. subcostalis","M. obliquus externus abdominis","M. obliquus internus abdominis","M. transversus abdominis","M. rectus abdominis"],
+    "Vaskularisasi & Inervasi Dinding Thorax": ["V. intercostalis anterior","V. intercostalis posterior","A. intercostalis anterior","A. intercostalis posterior","N. intercostalis","A. intercostalis suprema","A. pars thoracica aortae","V. azygos","V. hemiazygos","V. hemiazygos accesoria","A. mammaria / thoracica interna","A. musculophrenica"],
+    "Mediastinum": ["Mediastinum superior (thymus, trachea, esophagus, N. vagus)","Mediastinum anterior","Mediastinum media (pericardium, jantung)","Mediastinum posterior (aorta descendens, esophagus)","Arcus aorta","V. brachiocephalica dextra & sinistra","V. cava superior","Truncus brachiocephalicus","Ligamentum arteriosum (Botalli)"],
+    "Cor — Eksterior": ["Apex cordis","Basis cordis","Sulcus coronarius / atrioventricularis","Sulcus interatriale","Sulcus interventriculare anterior","Sulcus interventriculare posterior","Facies sternocostalis","Facies diaphragmatica","Facies pulmonalis dexter","Facies pulmonalis sinister","Ictus cordis"],
+    "Cor — Pericardium & Skeleton": ["Pericardium fibrosum","Pericardium serosum (lamina parietalis & visceralis)","Cavitas pericardii","Sinus obliquus pericardii","Sinus transversus pericardii","Epicardium","Myocardium","Endocardium","Annulus fibrosus dexter","Annulus fibrosus sinister","Trigonum fibrosum dexter","Trigonum fibrosum sinister","Tendo infundibuli"],
+    "Atrium Dextrum": ["Ostium venae cavae superioris","Ostium venae cavae inferioris","Sinus coronarius (ostium)","Auricula dextra","Mm. pectinati","Crista terminalis","Sulcus terminalis","Fossa ovalis","Limbus fossa ovalis","Nodus SA","Nodus AV","Trigonum Koch","Valvula Eustachii","Valvula Thebesii","Tendo todaro"],
+    "Ventriculus Dexter": ["Ostium atrioventriculare dexter (annulus fibrosus)","Valvula tricuspidalis","Cuspis anterior","Cuspis posterior","Cuspis septalis","Chorda tendinea","M. papillaris anterior","M. papillaris posterior","M. papillaris septalis","Conus arteriosus / infundibulum","Trabeculae carneae","Trabeculae septomarginalis (moderator band)","Crista supraventriculare","Septum interventriculare (pars membranacea, pars muscularis)","Valva trunci pulmonalis","Valvula semilunaris pulmonalis anterior","Valvula semilunaris pulmonalis dextra","Valvula semilunaris pulmonalis sinistra","Nodulus & lunula valvulae semilunaris"],
+    "Atrium Sinistrum": ["Ostium venae pulmonales (4 muara)","Auricula sinistra","Mm. pectinati (atrium sinistrum)"],
+    "Ventriculus Sinister": ["Ostium atrioventriculare sinister (annulus fibrosus)","Valvula bicuspidalis / mitralis","Cuspis anterior (mitral)","Cuspis posterior (mitral)","Chorda tendinea (sinistra)","M. papillaris anterior & posterior (sinistra)","Trabeculae carneae (sinistra)","Vestibulum aorticum","Valve aortae","Valvula semilunaris aorta dextra","Valvula semilunaris aorta sinistra","Valvula semilunaris aorta posterior","Sinus aortae dextra & sinistra"],
+    "Vaskularisasi Jantung": ["A. coronaria dextra","Ramus descendens posterior (R. interventricularis posterior)","R. marginalis dexter","R. nodi SA","R. nodi AV","A. coronaria sinistra","Ramus descendens anterior (R. interventricularis anterior)","R. circumflexus","R. marginalis sinister","V. cordis magna","V. cordis parva","V. cordis media","V. posterior ventriculi sinistri","V. oblique atrii sinistri","Sinus coronarius"],
+    "Sistem Konduksi & Inervasi Jantung": ["Nodus SA","Nodus AV","Fasciculus atrioventricularis (berkas His)","Crus dexter (trabecula septomarginalis)","Crus sinister","Serabut Purkinje","N. vagus (R. cardiacus)","Plexus cardiacus superficialis & profundus","Ganglion cervicale (simpatis)"],
+    "Pembuluh Darah — Aorta": ["Aorta ascendens","A. coronaria dextra & sinistra","Arcus aorta","Truncus brachiocephalicus","A. carotis communis dextra","A. subclavia dextra","A. carotis communis sinistra","A. subclavia sinistra","Aorta thoracalis","A. intercostalis posterior (aorta)","Aorta abdominalis","Truncus coeliacus","A. mesenterica superior","A. mesenterica inferior","A. renalis","A. gonadalis","A. iliaca communis","Bifurcatio aortae"],
+    "A. Carotis & Cerebri": ["A. carotis communis","Bifurcatio carotis","Sinus caroticus","A. carotis eksterna","A. thyroidea superior","A. lingualis","A. facialis","A. occipitalis","A. maxillaris","A. temporalis superficialis","A. carotis interna","A. ophthalmica","A. cerebri anterior","A. cerebri media","Circulus arteriosus Willisi"],
+    "A. Subclavia & Extremitas Superior": ["A. subclavia","A. vertebralis","A. mammaria / thoracica interna","Truncus thyrocervicalis","Truncus costocervicalis","A. axillaris (bag. 1, 2, 3)","A. brachialis","A. profunda brachii","A. radialis","A. ulnaris","A. interossea communis","Arcus palmaris superficialis","Arcus palmaris profunda"],
+    "A. Iliaca & Extremitas Inferior": ["A. iliaca communis","A. iliaca interna (div. anterior & posterior)","A. iliaca eksterna","A. epigastrica inferior","A. femoralis","A. profunda femoris","A. poplitea","A. tibialis anterior","A. tibialis posterior","A. fibularis","A. dorsalis pedis","Arcus plantaris"],
+    "Vena Sistemik & Superficial": ["V. cava superior","V. cava inferior","V. jugularis interna","V. brachiocephalica","V. azygos","V. hemiazygos","V. hemiazygos accesoria","V. porta hepatis (sirkulasi portal)","V. cephalica","V. basilica","V. mediana cubiti","V. saphena magna","V. saphena parva"],
+  },
+  "Respirasi": {
+    "Nasus Eksterna": ["Radix nasi","Dorsum nasi","Apex nasi","Nares (apertura nasalis anterior)","Os nasale","Proc. frontalis maxillaris","Cartilago nasi laterales","Cartilago alaris major","Cartilago septi nasi"],
+    "Cavitas Nasi": ["Vestibulum nasi","Cavitas nasi propria (regio respiratoria)","Cavitas nasi propria (regio olfactoria)","Septum nasi","Lamina perpendicularis os ethmoidalis","Os vomer","Choana (apertura nasalis posterior)","Limen nasi","Concha nasalis inferior","Concha nasalis media","Concha nasalis superior","Meatus nasi inferior","Meatus nasi medius","Meatus nasi superior","Recessus sphenoethmoidalis","Hiatus semilunaris","Bulla ethmoidalis","Infundibulum ethmoidalis","Atrium nasi media","Agger nasi","Carina nasi","Plexus Kiesselbach"],
+    "Sinus Paranasales": ["Sinus frontalis","Cellulae ethmoidalis anterior","Cellulae ethmoidalis media","Cellulae ethmoidalis posterior","Sinus sphenoidalis","Sinus maxillaris (antrum Highmori)"],
+    "Pharynx — Otot & Fascia": ["M. constrictor pharyngeus superior","M. constrictor pharyngeus medius","M. constrictor pharyngeus inferior","M. palatopharyngeus","M. stylopharyngeus","M. salpingopharyngeus","Fascia pharyngobasilaris","Raphe pharyngei"],
+    "Pharynx — Cincin Waldeyer": ["Tonsilla pharyngea (adenoid)","Tonsilla tubaria (2 buah)","Tonsilla palatina (2 buah)","Tonsilla lingualis"],
+    "Nasopharynx": ["Batas basis cranii – VC2","Ostium pharyngeum tuba auditiva","Torus tubarius","Torus levatorius","Plica salpingopalatina","Plica salpingopharyngea","Recessus pharyngeus (fossa Rossenmuller)","Isthmus pharyngeus"],
+    "Oropharynx": ["Arcus palatoglossus","Arcus palatopharyngeus","Fossa tonsillaris","Tonsilla lingualis (dorsum linguae 1/3 posterior)","Plica glossoepiglottica mediana & lateralis","Vallecula glossoepiglottica","Isthmus faucium"],
+    "Larynx": ["Cartilago thyroidea","Prominentia laryngea (pomum Adami)","Cartilago cricoidea","Epiglottis","Cartilago arytaenoidea","Cartilago corniculata","Cartilago cuneiformis","Membrana thyrohyoidea","Lig. cricothyroideum (medianum)","Lig. vocale","Rima glottidis","Vestibulum laryngis","Ventriculus laryngis","Plicae vocales","Plicae vestibulares","M. cricothyroideus","M. thyroarytaenoideus","M. cricoarytaenoideus posterior"],
+    "Trachea & Bronchi": ["Trachea","Cartilago trachealis","Bifurcatio tracheae (setinggi VT 4-5)","Carina tracheae","Bronchus principalis dexter (pendek, lebih vertikal)","Bronchus principalis sinister (panjang, lebih horizontal)","Bronchus lobaris","Bronchus segmentalis"],
+    "Pulmo — Anatomi Umum": ["Apex pulmonis","Basis pulmonis","Facies costalis","Facies mediastinalis","Facies diaphragmatica","Margo anterior","Margo inferior","Margo posterior","Hilum pulmonis","Radix pulmonis","Incisura cardiaca (sinistra)","Lingula pulmonis sinistri"],
+    "Pulmo Dextra": ["Lobus superior dextra","Lobus medius dextra","Lobus inferior dextra","Fissura obliqua dextra","Fissura horizontalis dextra"],
+    "Pulmo Sinistra": ["Lobus superior sinistra","Lobus inferior sinistra","Fissura obliqua sinistra"],
+    "Pleura": ["Pleura parietalis (pars costalis)","Pleura parietalis (pars diaphragmatica)","Pleura parietalis (pars mediastinalis)","Pleura parietalis (cupula pleurae / pars cervicalis)","Pleura visceralis","Cavitas pleuralis","Recessus costodiaphragmaticus","Recessus costomediastinalis"],
+    "Diaphragma": ["Pars sternalis diaphragmatis","Pars costalis diaphragmatis","Pars lumbalis diaphragmatis","Centrum tendineum","Hiatus aorticus","Hiatus oesophageus","Foramen venae cavae","Crus dextrum & sinistrum","Lig. arcuatum medianum","Lig. arcuatum mediale","Lig. arcuatum laterale"],
+    "Fascia Collum & Spasia": ["Fascia cervicalis superficialis","Investing layer (lamina superficial fascia profunda)","Pretracheal layer","Prevertebral layer","Spatium retropharyngeum","Spatium parapharyngeum"],
+  },
+  "Sistem Saraf": {
+    "Osteologi Kranium — Calvaria": ["Sulcus sinus sagitalis superior","Sulci arteriosi et venosi (a. meningea media)","Foveolae granulares (corpus Pacchioni)","Os frontale","Os parietale","Os occipitale","Sutura coronalis","Sutura sagittalis","Sutura lambdoidea"],
+    "Osteologi Kranium — Basis": ["Fossa cranii anterior","Fossa cranii media","Fossa cranii posterior","Sella turcica (fossa hypophysialis)","Foramen magnum","Protuberantia occipitalis interna","Margo superior partis petrosae","Foramen-foramen Nn. craniales (lihat tabel)"],
+    "Kulit Kepala (SCALP)": ["Skin (kelenjar keringat, folikel rambut)","Connective tissue subkutan (kaya vaskularisasi)","Aponeurosis epikranial","M. occipitofrontalis (venter frontalis)","M. occipitofrontalis (venter occipitalis)","Jaringan areolar longgar","Pericranium"],
+    "Meninges — Duramater": ["Duramater cranialis (lamina endostealis / periosteal)","Duramater cranialis (lamina meningealis)","Falx cerebri","Falx cerebelli","Tentorium cerebelli","Incisura tentorii","Diaphragma sellae","Duramater spinalis (1 lapis)"],
+    "Meninges — Arachnoid & Pia": ["Arachnoidea","Granulatio arachnoidalis (corpus Pacchioni)","Piamater cranialis","Piamater spinalis","Spatium epidurale","Spatium subdurale","Spatium subarachnoidea"],
+    "Cisterna Subarachnoidea": ["Cisterna cerebellomedullaris (magna)","Cisterna pontis / pontocerebellaris","Cisterna interpeduncularis","Cisterna chiasmatica","Cisterna quadrigeminal (v. magna cerebri)","Cisterna ambiens","Cisterna lumbalis (tempat pungsi lumbal)"],
+    "Sinus Duramatris": ["Sinus sagitalis superior","Sinus sagitalis inferior","Sinus rectus","Sinus occipitalis","Sinus cavernosus","Sinus intercavernosi","Sinus transversus","Sinus sigmoideus","Sinus petrosus superior","Sinus petrosus inferior","Sinus sphenoparietalis","Confluens sinuum"],
+    "Cerebrum — Permukaan & Lobus": ["Hemispherium cerebri","Fissura longitudinalis cerebri","Sulcus centralis (fissura Rolando)","Fissura lateralis (Sylvius)","Lobus frontalis","Lobus parietalis","Lobus occipitalis","Lobus temporalis","Lobus insularis (insula Reil)","Lobus limbicus"],
+    "Cerebrum — Gyri Utama": ["Gyrus precentralis","Gyrus postcentralis","Gyrus frontalis superior","Gyrus frontalis medius","Gyrus frontalis inferior (pars orbitalis, triangularis, opercularis)","Gyrus temporalis superior","Gyrus temporalis medius","Gyrus lingualis","Gyrus fusiformis","Cuneus","Precuneus","Lobulus paracentralis"],
+    "Cerebrum — Serabut & Commissura": ["Corpus callosum (rostrum, genu, truncus, splenium)","Commissura anterior","Commissura posterior","Serabut asosiasi","Serabut proyeksi","Serabut komisural","Capsula interna"],
+    "Ganglia Basalis": ["Nucleus caudatus (caput, corpus, cauda)","Putamen","Globus pallidus","Claustrum","Corpus striatum","Amygdala","Substantia nigra"],
+    "Sistem Ventrikel & LCS": ["Ventriculus lateralis (cornu frontale, temporale, occipitale)","Foramen interventriculare (Monroe)","Ventriculus tertius","Aqueductus cerebri (Sylvius)","Ventriculus quartus","Foramen Luschka (apertura lateralis)","Foramen Magendi (apertura mediana)","Plexus choroideus","Canalis centralis (medulla spinalis)"],
+    "Diencephalon": ["Thalamus","Hypothalamus","Epithalamus (glandula pinealis / corpus pineale)","Subthalamus","Glandula hypophysis (pituitary)","Infundibulum hypophyseos","Chiasma opticum","Tractus opticus"],
+    "Truncus Cerebri — Mesencephalon": ["Tectum mesencephali","Colliculus superior (corpora quadrigemina)","Colliculus inferior","Tegmentum mesencephali","Substantia nigra","Nucleus ruber","Crus cerebri","Fossa interpeduncularis","Aqueductus cerebri"],
+    "Truncus Cerebri — Pons & Medulla": ["Pons (basis pontis)","Sulcus basilaris","Pedunculus cerebellaris medius","Tegmentum pontis","Medulla oblongata","Pyramis medullae oblongatae","Decussatio pyramidum","Oliva","Pedunculus cerebellaris inferior","Fossa rhomboidea (dasar ventriculus quartus)"],
+    "Cerebellum": ["Hemispherium cerebelli","Vermis","Fissura prima","Fissura horizontalis cerebelli","Lobus anterior cerebelli","Lobus posterior cerebelli","Cortex cerebelli (folium, lamina, sulcus)","Nuclei cerebelli (dentatus, emboliformis, globosus, fastigii)","Pedunculus cerebellaris superior","Pedunculus cerebellaris medius","Pedunculus cerebellaris inferior"],
+    "Medulla Spinalis": ["Substantia grisea (cornu anterius)","Substantia grisea (cornu posterius)","Substantia grisea (cornu laterale)","Substantia alba (funiculus anterior)","Substantia alba (funiculus lateralis)","Substantia alba (funiculus posterior)","Sulcus medianus anterior","Sulcus lateralis anterior","Canalis centralis medullae","Radix anterior (motoris)","Radix posterior (sensoris)","Ganglion spinale","N. spinalis","Cauda equina","Conus medullaris","Filum terminale"],
+    "Vaskularisasi Otak": ["A. vertebralis","A. basilaris","A. cerebri posterior","A. communicans posterior","A. carotis interna","A. cerebri anterior","A. communicans anterior","A. cerebri media","Circulus arteriosus Willisi","A. cerebelli inferior anterior (AICA)","A. cerebelli inferior posterior (PICA)","A. cerebelli superior","V. cerebri magna (Galen)","V. cerebri internae"],
+    "Nervi Craniales": ["N. olfactorius (CN I) — fila olfactoria","N. opticus (CN II) — canalis opticus","N. oculomotorius (CN III) — fissura orbitalis superior","N. trochlearis (CN IV) — fissura orbitalis superior","N. trigeminus (CN V) — N. ophthalmicus, maxillaris, mandibularis","N. abducens (CN VI) — fissura orbitalis superior","N. facialis (CN VII) — meatus acusticus internus","N. vestibulocochlearis (CN VIII)","N. glossopharyngeus (CN IX) — foramen jugulare","N. vagus (CN X) — foramen jugulare","N. accessorius (CN XI) — foramen jugulare","N. hypoglossus (CN XII) — canalis hypoglossi"],
+    "Plexus & Nervi Spinales": ["Plexus cervicalis (C1-C4)","Plexus brachialis (C5-T1)","N. musculocutaneus","N. medianus","N. ulnaris","N. radialis","N. axillaris","Plexus lumbalis (L1-L4)","Plexus sacralis (L4-S3)","N. femoralis","N. obturatorius","N. ischiadicus","N. tibialis","N. fibularis communis"],
+  },
+  "Gastrointestinal": {
+    "Cavum Oris — Labium & Batas": ["Rima oris","Labium superior & inferior","Angulus oris / commisura labiorum","Sulcus nasolabialis","Sulcus mentolabialis","Philtrum","Vermilion border","M. orbicularis oris","M. levator labii superioris","M. levator anguli oris","M. depressor labii inferioris","M. depressor anguli oris"],
+    "Otot Mastikasi": ["M. pterygoideus lateralis","M. pterygoideus medialis","M. masseter","M. temporalis","Articulatio temporomandibularis (ATM)"],
+    "Cavum Oris Proprium — Palatum": ["Vestibulum oris","Frenulum labii superior & inferior","Cavum oris proprium","Palatum durum (proc. palatinus maxillaris + lamina horizontalis os palatini)","Palatum molle (aponeurosis palatinus)","M. tensor veli palatini","M. levator veli palatini","M. palatoglossus","M. palatopharyngeus","M. uvulae","Plica palatina transversa","Raphe palati","Papilla incisiva","Isthmus faucium"],
+    "Cavum Oris — Dasar": ["M. digastricus (venter anterior & posterior, ansa tendinis)","M. mylohyoideus","M. geniohyoideus","Diafragma oris"],
+    "Lingua": ["Apex linguae","Dorsum linguae (pars oralis 2/3, pars pharyngis 1/3)","Radix linguae","Sulcus medianus linguae","Sulcus terminalis","Foramen caecum linguae","Septum linguae","Frenulum linguae","Plica fimbriata","Plica sublingualis","Caruncula sublingualis","V. profunda linguae","Papilla vallata (circumvallata)","Papilla foliata","Papilla filiformis","Papilla fungiformis","Tonsilla lingualis","M. genioglossus","M. hyoglossus","M. styloglossus","M. chondroglossus","M. longitudinalis superior & inferior","M. transversus linguae","M. verticalis linguae"],
+    "Glandula Salivaria": ["Gl. parotis","Ductus parotideus (Stensen) — buka di M2 atas","Gl. submandibularis","Ductus submandibularis (Wharton)","Gl. sublingualis","Caruncula sublingualis","Plica sublingualis"],
+    "Dentes": ["Gingiva","Corona dentis","Collum dentis","Radix dentis","Enamel","Dentinum","Cementum","Pulpa dentis","Foramen apicis dentis","Periodontium"],
+    "Pharynx & Oesophagus": ["Nasopharynx","Oropharynx","Laryngopharynx / hypopharynx","M. constrictor pharyngeus (sup, med, inf)","Plica pharyngoepiglottica","Recessus piriformis","Oesophagus (pars cervicalis)","Oesophagus (pars thoracica)","Oesophagus (pars abdominalis)","Penyempitan oesophagus (3 tempat)","Sphincter oesophagus inferior"],
+    "Gaster": ["Cardia","Fundus gastri","Corpus gastri","Antrum pyloricum","Pylorus (sphincter pylori)","Curvatura major","Curvatura minor","Incisura angularis","Rugae gastricae","M. obliquus internus gastri","M. circularis gastri","M. longitudinalis gastri"],
+    "Intestinum Tenue — Duodenum": ["Pars superior duodeni (D1)","Pars descendens duodeni (D2)","Pars horizontalis duodeni (D3)","Pars ascendens duodeni (D4)","Papilla duodeni major (Vateri)","Papilla duodeni minor","Ampulla hepatopancreatica","Flexura duodenojejunalis","Lig. suspensorium (Treitz)"],
+    "Intestinum Tenue — Jejunum & Ileum": ["Jejunum (proksimal 2/5)","Ileum (distal 3/5)","Plica circulares (Kerckring)","Villi intestinales","Crypta Lieberkuhn","Plaque Peyer (di ileum)","Valva ileocaecalis (Bauhin)"],
+    "Intestinum Crassum": ["Caecum","Appendix vermiformis","Valva ileocaecalis","Colon ascendens","Flexura coli hepatica (dextra)","Colon transversum","Flexura coli lienalis (sinistra)","Colon descendens","Colon sigmoideum","Rectum","Canalis analis","Taenia coli","Haustra coli","Appendices epiploicae"],
+    "Hepar": ["Lobus hepatis dexter","Lobus hepatis sinister","Lobus caudatus","Lobus quadratus","Facies diaphragmatica hepatis","Facies visceralis hepatis","Impressiones viscerales (renalis, colica, duodenalis, gastrica)","Porta hepatis","V. porta hepatis","Lig. falciforme hepatis","Lig. teres hepatis (sisa v. umbilicalis)","Lig. venosum (sisa ductus venosus)"],
+    "Vesica Fellea & Saluran Empedu": ["Vesica fellea (fundus, corpus, collum)","Infundibulum (Hartmann's pouch)","Ductus cysticus (valva spiralis Heister)","Ductus hepaticus dexter & sinister","Ductus hepaticus communis","Ductus choledochus","Ampulla hepatopancreatica (Vateri)","Sphincter Oddi"],
+    "Pancreas": ["Caput pancreatis","Processus uncinatus","Corpus pancreatis","Cauda pancreatis","Ductus pancreaticus (Wirsung)","Ductus pancreaticus accessorius (Santorini)","Papilla duodeni major (muara ductus Wirsung)"],
+    "Lien (Milza)": ["Facies diaphragmatica lienis","Facies visceralis lienis","Hilus lienalis","Lig. splenorenal (lienorenale)","Lig. gastrolienale","Capsula lienis"],
+    "Peritoneum": ["Peritoneum parietale","Peritoneum viscerale","Cavitas peritonealis (mayor)","Bursa omentalis (cavitas peritonealis minor)","Foramen omentale (Winslow)","Omentum majus","Omentum minus","Lig. hepatogastricum","Lig. hepatoduodenale","Mesenterium","Mesocolon transversum","Mesocolon sigmoideum"],
+    "Vaskularisasi GIT": ["Truncus coeliacus — A. hepatica communis, A. lienalis, A. gastrica sinistra","A. mesenterica superior","A. mesenterica inferior","V. porta hepatis (sirkulasi portal)","V. mesenterica superior","V. mesenterica inferior","V. lienalis"],
+  },
+};
+
+// ─── STATE ─────────────────────────────────────────────
+let activeSys = null, activeSub = null, filterMode = 'all', searchQ = '';
+let pendingUploadKey = null;
+
+function loadDB(){
+  try{ return JSON.parse(localStorage.getItem('anatomy_db_v2') || '{}'); }catch(e){ return {}; }
+}
+function saveDB(db){ localStorage.setItem('anatomy_db_v2', JSON.stringify(db)); }
+
+function getItem(sys, sub, name){
+  const db = loadDB();
+  const k = `${sys}||${sub}||${name}`;
+  return db[k] || {checked:false, photos:[], notes:''};
+}
+function setItem(sys, sub, name, data){
+  const db = loadDB();
+  db[`${sys}||${sub}||${name}`] = data;
+  saveDB(db);
+}
+
+// ─── COUNTS ────────────────────────────────────────────
+function getCounts(){
+  const db = loadDB();
+  let total=0, done=0;
+  Object.keys(DATA).forEach(sys => Object.keys(DATA[sys]).forEach(sub => DATA[sys][sub].forEach(name => {
+    total++;
+    const k = `${sys}||${sub}||${name}`;
+    if((db[k]||{}).checked) done++;
+  })));
+  return {total, done};
+}
+function getSubCounts(sys, sub){
+  const db = loadDB();
+  let total = DATA[sys][sub].length, done = 0;
+  DATA[sys][sub].forEach(name => {
+    const k = `${sys}||${sub}||${name}`;
+    if((db[k]||{}).checked) done++;
+  });
+  return {total, done};
+}
+function getSysCounts(sys){
+  const db = loadDB();
+  let total=0, done=0;
+  Object.keys(DATA[sys]).forEach(sub => DATA[sys][sub].forEach(name => {
+    total++;
+    const k = `${sys}||${sub}||${name}`;
+    if((db[k]||{}).checked) done++;
+  }));
+  return {total, done};
+}
+
+// ─── SIDEBAR ───────────────────────────────────────────
+function buildSidebar(){
+  const list = document.getElementById('sys-list');
+  list.innerHTML = '';
+  Object.keys(DATA).forEach(sys => {
+    const {total,done} = getSysCounts(sys);
+    const pct = total ? Math.round(done/total*100) : 0;
+    const wrap = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.className = 'sys-btn' + (activeSys===sys?' active':'');
+    btn.innerHTML = `<span>${sys}</span><span class="sys-badge">${done}/${total}</span>`;
+    btn.onclick = () => toggleSys(sys, wrap, btn);
+    wrap.appendChild(btn);
+
+    const subWrap = document.createElement('div');
+    subWrap.className = 'sub-list' + (activeSys===sys?' open':'');
+    subWrap.id = 'sub-'+sys.replace(/\s/g,'_');
+    Object.keys(DATA[sys]).forEach(sub => {
+      const sc = getSubCounts(sys, sub);
+      const done_sub = sc.done === sc.total;
+      const sbtn = document.createElement('button');
+      sbtn.className = 'sub-btn' + (activeSub===sub&&activeSys===sys?' active':'') + (done_sub?' done':'');
+      sbtn.innerHTML = `<span>${sub}</span><span class="sub-badge">${sc.done}/${sc.total}</span>`;
+      sbtn.onclick = () => selectSub(sys, sub);
+      subWrap.appendChild(sbtn);
+    });
+    wrap.appendChild(subWrap);
+    list.appendChild(wrap);
+  });
+  updateProgress();
+}
+
+function toggleSys(sys, wrap, btn){
+  const subWrap = wrap.querySelector('.sub-list');
+  const isOpen = subWrap.classList.contains('open');
+  document.querySelectorAll('.sub-list').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.sys-btn').forEach(el => el.classList.remove('active'));
+  if(!isOpen){ subWrap.classList.add('open'); btn.classList.add('active'); }
+  if(activeSys !== sys){ activeSub = null; }
+  activeSys = isOpen ? null : sys;
+  updateProgress();
+}
+
+function selectSub(sys, sub){
+  activeSys = sys; activeSub = sub;
+  filterMode = 'all'; searchQ = '';
+  const si = document.getElementById('search-input');
+  if(si) si.value = '';
+  buildSidebar();
+  renderItems();
+}
+
+function updateProgress(){
+  const {total, done} = getCounts();
+  document.getElementById('prog-text').textContent = `${done} / ${total}`;
+  document.getElementById('prog-fill').style.width = total ? (done/total*100)+'%' : '0%';
+}
+
+// ─── RENDER ─────────────────────────────────────────────
+function renderItems(){
+  if(!activeSys || !activeSub){ showWelcome(); return; }
+  document.getElementById('welcome-view').style.display = 'none';
+  document.getElementById('items-view').style.display = 'block';
+  document.getElementById('topbar-title').textContent = activeSub;
+  const tag = document.getElementById('system-tag');
+  tag.textContent = activeSys; tag.style.display = '';
+  document.getElementById('search-wrap').style.display = '';
+
+  const items = DATA[activeSys][activeSub];
+  const container = document.getElementById('items-view');
+
+  const db = loadDB();
+  let filtered = items.filter(name => {
+    const k = `${activeSys}||${activeSub}||${name}`;
+    const it = db[k] || {};
+    if(searchQ && !name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    if(filterMode==='done' && !it.checked) return false;
+    if(filterMode==='undone' && it.checked) return false;
+    if(filterMode==='photo' && !(it.photos||[]).length) return false;
+    return true;
+  });
+
+  const {total,done} = getSubCounts(activeSys, activeSub);
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:12px;color:var(--muted)">${done} dari ${total} dicentang</div>
+      <div style="height:6px;flex:1;min-width:120px;max-width:200px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;background:var(--success);width:${total?done/total*100:0}%;transition:width .3s"></div></div>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab ${filterMode==='all'?'active':''}" onclick="setFilter('all')">Semua (${items.length})</button>
+      <button class="filter-tab ${filterMode==='done'?'active':''}" onclick="setFilter('done')">✓ Sudah (${done})</button>
+      <button class="filter-tab ${filterMode==='undone'?'active':''}" onclick="setFilter('undone')">Belum (${total-done})</button>
+      <button class="filter-tab ${filterMode==='photo'?'active':''}" onclick="setFilter('photo')">📷 Punya foto</button>
+    </div>
+    <div class="item-list" id="item-list"></div>
+    ${filtered.length===0?'<div class="empty-search">Tidak ada preparat yang cocok</div>':''}
+  `;
+
+  const listEl = document.getElementById('item-list');
+  filtered.forEach(name => listEl.appendChild(buildItem(name)));
+}
+
+function buildItem(name){
+  const sys=activeSys, sub=activeSub;
+  const it = getItem(sys, sub, name);
+  const photoCount = (it.photos||[]).length;
+  const id = btoa(unescape(encodeURIComponent(`${sys}||${sub}||${name}`))).replace(/[^a-z0-9]/gi,'').slice(0,20);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'prep-item' + (it.checked?' checked':'');
+  wrap.id = 'item-'+id;
+
+  wrap.innerHTML = `
+    <div class="prep-header">
+      <input type="checkbox" class="prep-check" ${it.checked?'checked':''} onchange="toggleCheck('${sys}','${sub}','${name.replace(/'/g,"\\'")}',this)">
+      <span class="prep-name">${name}</span>
+      <span class="photo-count ${photoCount?'has-photo':''}">${photoCount?`📷 ${photoCount}`:'tanpa foto'}</span>
+      <button class="expand-btn" onclick="toggleGallery('gallery-${id}',this)" title="Lihat / tambah foto">${photoCount?'▾':'+'}</button>
+    </div>
+    <div class="prep-gallery" id="gallery-${id}">
+      <div class="gallery-grid" id="grid-${id}"></div>
+      ${!photoCount?'<p class="no-photo">Belum ada foto — upload dari laptop kamu</p>':''}
+      <button class="add-photo-btn" onclick="triggerUpload('${sys}','${sub}','${name.replace(/'/g,"\\'")}')">+ Tambah foto preparat</button>
+      <div class="notes-area">
+        <div class="notes-lbl">Catatan:</div>
+        <textarea placeholder="Tambahkan catatan di sini..." onblur="saveNote('${sys}','${sub}','${name.replace(/'/g,"\\'")}',this.value)">${it.notes||''}</textarea>
+      </div>
+    </div>
+  `;
+
+  // Build grid
+  const grid = wrap.querySelector(`#grid-${id}`);
+  (it.photos||[]).forEach((url, idx) => {
+    const th = document.createElement('div'); th.className='thumb';
+    th.innerHTML = `<img src="${url}" alt="${name}" onclick="openLB('${url}','${name}')"><button class="thumb-del" onclick="deletePhoto('${sys}','${sub}','${name.replace(/'/g,"\\'")}',${idx},event)" title="Hapus foto">×</button>`;
+    grid.appendChild(th);
+  });
+
+  return wrap;
+}
+
+function toggleGallery(id, btn){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? '▴' : (document.querySelector('#'+id.replace('gallery-','grid-')).children.length?'▾':'+');
+}
+
+function toggleCheck(sys, sub, name, el){
+  const it = getItem(sys, sub, name);
+  it.checked = el.checked;
+  setItem(sys, sub, name, it);
+  const nameClean = name.replace(/'/g,"\\'");
+  const id = btoa(unescape(encodeURIComponent(`${sys}||${sub}||${name}`))).replace(/[^a-z0-9]/gi,'').slice(0,20);
+  const wrap = document.getElementById('item-'+id);
+  if(wrap) wrap.className = 'prep-item' + (it.checked?' checked':'');
+  buildSidebar();
+}
+
+function saveNote(sys, sub, name, val){
+  const it = getItem(sys, sub, name);
+  it.notes = val;
+  setItem(sys, sub, name, it);
+}
+
+function triggerUpload(sys, sub, name){
+  pendingUploadKey = {sys, sub, name};
+  document.getElementById('global-file').value = '';
+  document.getElementById('global-file').click();
+}
+
+function handleFileUpload(e){
+  if(!pendingUploadKey) return;
+  const {sys, sub, name} = pendingUploadKey;
+  const files = Array.from(e.target.files);
+  let done = 0;
+  if(!files.length) return;
+  files.forEach(file => {
+    const r = new FileReader();
+    r.onload = ev => {
+      const it = getItem(sys, sub, name);
+      it.photos = it.photos || [];
+      it.photos.push(ev.target.result);
+      setItem(sys, sub, name, it);
+      done++;
+      if(done === files.length && activeSys===sys && activeSub===sub) renderItems();
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+function deletePhoto(sys, sub, name, idx, ev){
+  ev.stopPropagation();
+  if(!confirm('Hapus foto ini?')) return;
+  const it = getItem(sys, sub, name);
+  it.photos.splice(idx, 1);
+  setItem(sys, sub, name, it);
+  renderItems();
+}
+
+function openLB(url, cap){
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-cap').textContent = cap;
+  document.getElementById('lb').classList.add('open');
+}
+document.getElementById('lb').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+
+function setFilter(mode){
+  filterMode = mode;
+  renderItems();
+}
+
+function filterItems(){
+  searchQ = document.getElementById('search-input').value;
+  renderItems();
+}
+
+// ─── WELCOME ────────────────────────────────────────────
+function showWelcome(){
+  document.getElementById('welcome-view').style.display = '';
+  document.getElementById('items-view').style.display = 'none';
+  document.getElementById('topbar-title').textContent = 'Checklist Preparat Anatomi';
+  document.getElementById('system-tag').style.display = 'none';
+  document.getElementById('search-wrap').style.display = 'none';
+
+  const grid = document.getElementById('stats-grid');
+  const {total, done} = getCounts();
+  let sysRows = Object.keys(DATA).map(sys => {
+    const c = getSysCounts(sys);
+    return `<div class="stat-card"><div class="val" style="font-size:15px;color:var(--accent)">${c.done}<span style="font-size:12px;color:var(--muted)">/${c.total}</span></div><div class="lbl">${sys}</div></div>`;
+  }).join('');
+  grid.innerHTML = `<div class="stat-card"><div class="val">${done}</div><div class="lbl">Sudah dicentang</div></div><div class="stat-card"><div class="val">${total-done}</div><div class="lbl">Belum dicentang</div></div><div class="stat-card"><div class="val">${total?Math.round(done/total*100):0}%</div><div class="lbl">Progress</div></div>` + sysRows;
+}
+
+// ─── INIT ───────────────────────────────────────────────
+buildSidebar();
+showWelcome();
+</script>
+</body>
+</html>
