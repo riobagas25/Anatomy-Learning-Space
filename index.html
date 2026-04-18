@@ -121,6 +121,15 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--bone);paddi
 .done-screen h2{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:8px}
 .done-screen p{color:var(--muted);font-size:13px;margin-bottom:24px}
 footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.backup-section{border-top:1px solid var(--border);background:var(--bone)}
+.backup-inner{max-width:1100px;margin:0 auto;padding:24px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.backup-desc{font-size:12px;color:var(--muted);line-height:1.7;max-width:400px;margin-top:4px}
+.backup-actions{display:flex;gap:8px;flex-shrink:0}
+.backup-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:background .18s,color .18s}
+.export-btn{border:1px solid var(--border-strong);background:var(--ink);color:var(--bone)}
+.export-btn:hover{background:var(--accent);border-color:var(--accent)}
+.import-btn{border:1px solid var(--border-strong);background:none;color:var(--ink)}
+.import-btn:hover{background:var(--sidebar)}
 /* ANIM */
 .fade-up{opacity:0;transform:translateY(24px);animation:fadeUp .6s ease forwards}
 .fade-up:nth-child(1){animation-delay:.1s}
@@ -139,6 +148,9 @@ footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;justify
   .card{border-right:none;border-bottom:1px solid var(--border-strong)}
   .card:last-child{border-bottom:none}
   footer{padding:24px 20px;flex-direction:column;gap:8px;text-align:center}
+  .backup-inner{padding:20px;flex-direction:column;align-items:flex-start}
+  .backup-actions{width:100%}
+  .backup-btn{flex:1;justify-content:center}
   .hero-deco{display:none}
   nav .nav-label{display:none}
   .modal-body,.modal-header{padding-left:18px;padding-right:18px}
@@ -305,6 +317,28 @@ footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;justify
   </div>
 </div>
 
+<!-- BACKUP SECTION -->
+<section class="backup-section">
+  <div class="backup-inner">
+    <div class="backup-left">
+      <div class="section-label" style="margin-bottom:8px">Data backup</div>
+      <p class="backup-desc">Semua data tersimpan di browser ini. Export rutin biar aman — bisa disimpan ke Google Drive, USB, atau mana saja.</p>
+    </div>
+    <div class="backup-actions">
+      <button class="backup-btn export-btn" onclick="exportAll()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v8M3 6.5l3.5 3.5 3.5-3.5M1 11h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export backup
+      </button>
+      <label class="backup-btn import-btn">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 10V2M3 5.5l3.5-3.5 3.5 3.5M1 11h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Import backup
+        <input type="file" accept=".json" onchange="importAll(event)" style="display:none">
+      </label>
+    </div>
+  </div>
+  <div id="backup-msg" style="display:none;text-align:center;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;padding:8px 48px;margin-top:0"></div>
+</section>
+
 <footer>
   <span>Anatomy Learning Space — FK UKDW</span>
   <span>Built for personal study use</span>
@@ -312,8 +346,57 @@ footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;justify
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-// ── STORAGE
-function loadCards(){try{return JSON.parse(localStorage.getItem('als_v2')||'[]')}catch(e){return[]}}
+// ── BACKUP & RESTORE ─────────────────────────────────────
+function exportAll(){
+  const payload = {
+    version: 2,
+    exported_at: new Date().toISOString(),
+    quiz_cards: JSON.parse(localStorage.getItem('als_v2') || '[]'),
+    checklist: JSON.parse(localStorage.getItem('anatomy_db_v2') || '{}')
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  a.download = `anatomy-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showMsg('✓ Backup berhasil didownload. Simpan file ini ke Google Drive atau folder aman.', '#2d7a4f');
+}
+
+function importAll(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.version) throw new Error('Format file tidak dikenali.');
+      const cardCount = (data.quiz_cards||[]).length;
+      const checklistCount = Object.keys(data.checklist||{}).length;
+      const ok = confirm(
+        `File backup ditemukan:\n• ${cardCount} kartu quiz\n• ${checklistCount} item checklist\n\nData yang ada sekarang akan diganti. Lanjutkan?`
+      );
+      if(!ok) return;
+      if(data.quiz_cards) localStorage.setItem('als_v2', JSON.stringify(data.quiz_cards));
+      if(data.checklist) localStorage.setItem('anatomy_db_v2', JSON.stringify(data.checklist));
+      showMsg(`✓ Berhasil import: ${cardCount} kartu quiz + ${checklistCount} item checklist dipulihkan.`, '#2d7a4f');
+    } catch(err) {
+      showMsg('✗ File tidak valid atau rusak: ' + err.message, 'var(--accent)');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showMsg(msg, color){
+  const el = document.getElementById('backup-msg');
+  el.textContent = msg;
+  el.style.color = color;
+  el.style.display = '';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
 function saveCards(c){localStorage.setItem('als_v2',JSON.stringify(c))}
 
 // ── QUIZ STATE

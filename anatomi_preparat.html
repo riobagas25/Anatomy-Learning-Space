@@ -124,6 +124,11 @@ input[type=file]{display:none}
 <div class="back-bar">
   <a href="index.html" class="back-btn"><span class="back-btn-arrow"></span>Back to home</a>
   <span class="back-bar-title">Anatomy Checklist</span>
+  <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+    <button onclick="exportChecklist()" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border-s);border-radius:2px;background:var(--text);color:var(--bg);cursor:pointer">↓ Export</button>
+    <label style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border-s);border-radius:2px;background:none;cursor:pointer;color:var(--text)">↑ Import<input type="file" accept=".json" onchange="importChecklist(event)" style="display:none"></label>
+    <span id="cl-msg" style="display:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:#2d7a4f"></span>
+  </div>
 </div>
 
 <div class="layout">
@@ -249,6 +254,44 @@ const DATA = {
     "Vaskularisasi GIT": ["Truncus coeliacus — A. hepatica communis, A. lienalis, A. gastrica sinistra","A. mesenterica superior","A. mesenterica inferior","V. porta hepatis (sirkulasi portal)","V. mesenterica superior","V. mesenterica inferior","V. lienalis"],
   },
 };
+
+// ─── EXPORT / IMPORT ────────────────────────────────────
+function exportChecklist(){
+  const db = JSON.parse(localStorage.getItem('anatomy_db_v2')||'{}');
+  const payload = {version:2, exported_at:new Date().toISOString(), checklist:db};
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  a.download = `checklist-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  clMsg('✓ Exported', '#2d7a4f');
+}
+function importChecklist(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const data = JSON.parse(ev.target.result);
+      const db = data.checklist || (data.version ? null : data);
+      if(!db) throw new Error('Format tidak dikenali.');
+      const count = Object.keys(db).length;
+      if(!count) throw new Error('Data kosong.');
+      if(!confirm(`Import ${count} item checklist?\nData sekarang akan diganti.`)) return;
+      localStorage.setItem('anatomy_db_v2', JSON.stringify(db));
+      clMsg(`✓ ${count} item dipulihkan`, '#2d7a4f');
+      buildSidebar(); showWelcome();
+    }catch(err){ clMsg('✗ '+err.message, '#b34a2a'); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+function clMsg(msg, color){
+  const el=document.getElementById('cl-msg');
+  el.textContent=msg; el.style.color=color; el.style.display='';
+  setTimeout(()=>el.style.display='none', 3500);
+}
 
 // ─── STATE ─────────────────────────────────────────────
 let activeSys = null, activeSub = null, filterMode = 'all', searchQ = '';
