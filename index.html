@@ -398,6 +398,7 @@ function showMsg(msg, color){
   setTimeout(() => el.style.display = 'none', 5000);
 }
 
+function loadCards(){try{return JSON.parse(localStorage.getItem('als_v2')||'[]')}catch(e){return[]}}
 function saveCards(c){localStorage.setItem('als_v2',JSON.stringify(c))}
 
 // ── QUIZ STATE
